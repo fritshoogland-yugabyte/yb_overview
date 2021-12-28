@@ -1,4 +1,4 @@
-# README: yb-overview
+# README: yb_overview
 
 This is the sourcecode for a tool that reads the YugabyteDB master http port(s), and generates an overview of the YugabyteDB cluster status as registered by the masters.
 
@@ -6,13 +6,13 @@ By default, the yb-overview tool tries to use localhost:7000.
 Optionally, a list of masters (address:port) separated by a comma can be provided via the `-m` switch:
 
 ```
-./yb-overview -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
+./yb_overview -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
 ```
 
 This is how the output looks like:
 
 ```
-fritshoogland@MacBook-Pro-van-Frits % ./ybtool
+fritshoogland@MacBook-Pro-van-Frits % ./yb_overview
 
 Master UUID                      RPC Host:Port        State         Role
 7d484fdc8aa14fd59fb43052aac21329 yb-1.local:7100      ALIVE         FOLLOWER
@@ -39,7 +39,7 @@ yb-3.local:9000      /mnt/d0                     451      10228  4.42%
 yb-overview tries to obtain the information from the master addresses in the exact order specified. If it doesn't succeed, it tries the next specified address, however it will notify the failure:
 (please note it only requires one master to read the master status data)
 ```
-fritshoogland@MacBook-Pro-van-Frits % ./ybtool -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
+fritshoogland@MacBook-Pro-van-Frits % ./yb_overview -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
 Warning: master not responding on: 192.168.66.80:7000
 
 Master UUID                      RPC Host:Port        State         Role
@@ -53,7 +53,7 @@ The first line raises a warning, and the masters overview also shows the master 
 ## tablet server failure
 yb-overview reads the tablet server information from the master. A tablet server is considered "dead" when it doesn't provide heartbeats for 60 seconds by default. Once that happens, it will show be visible with the status DEAD:
 ```
-fritshoogland@MacBook-Pro-van-Frits % ./ybtool -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
+fritshoogland@MacBook-Pro-van-Frits % ./yb_overview -m 192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000
 
 Master UUID                      RPC Host:Port        State         Role
 7d484fdc8aa14fd59fb43052aac21329 yb-1.local:7100      ALIVE         FOLLOWER

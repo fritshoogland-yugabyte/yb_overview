@@ -4,9 +4,9 @@ use port_scanner::scan_port_addr;
 use std::collections::HashMap;
 
 //use ybtool::{AllMasters, KeySpacesNoId, MasterHealthCheck, Metrics, TablesNoId, TabletsNoId, NamedMetrics};
-use ybtool::{AllMasters, KeySpacesNoId, MasterHealthCheck, TablesNoId, TabletsNoId};
-use ybtool::AllTabletServers;
-use ybtool::MasterDumpEntities;
+use yb_overview::{AllMasters, KeySpacesNoId, MasterHealthCheck, TablesNoId, TabletsNoId};
+use yb_overview::AllTabletServers;
+use yb_overview::MasterDumpEntities;
 
 #[derive(Debug, StructOpt)]
 struct Opts {
