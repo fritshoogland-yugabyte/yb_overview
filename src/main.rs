@@ -153,9 +153,14 @@ fn main() {
         };
         hash_by_tablet_id.insert(tablet.tablet_id, temp);
     }
-    println!("\nUnder replicated tablets");
-    println!("{:<5} {:<20} {:<30} {:<10} {:<50}", "Type", "Keyspacename", "Tablename", "State", "Tablet replicas");
+
+    let mut got_underreplication: Option<bool> = None;
     for under_replicated_tablet in &master_healthcheck_parse.under_replicated_tablets {
+        if got_underreplication.is_none() {
+            println!("\nUnder replicated tablets");
+            println!("{:<5} {:<20} {:<30} {:<10} {:<50}", "Type", "Keyspacename", "Tablename", "State", "Tablet replicas");
+            got_underreplication = Some(true);
+        };
         let tablet = hash_by_tablet_id.get(under_replicated_tablet);
         let table = hash_by_table_id.get(&tablet.unwrap().table_id);
         let keyspace = hash_by_keyspace_id.get(&table.unwrap().keyspace_id);
@@ -169,43 +174,44 @@ fn main() {
         }
         println!("");
     }
-/*
-    let master_metrics_data = reqwest::blocking::get(format!("http://{}/metrics", master_to_use.as_ref().unwrap()))
-        .unwrap_or_else(|e| {
-            eprintln!("Error reading from URL: {}", e);
-            process::exit(1);
-        })
-        .text().unwrap();
-    //println!("{:?}", master_metrics_data);
-    let master_metrics_parse: Vec<Metrics> = serde_json::from_str(&master_metrics_data)
-        .unwrap_or_else(|e| {
-            eprintln!("Error parsing response: {}", e);
-            process::exit(1);
-        });
-    let metricstypes = vec!["cluster", "server", "table", "tablet"];
-    for metrictype in metricstypes.iter() {
-        for metric in &master_metrics_parse {
-        //if metric.metrics_type == "server" {
-            for m in &metric.metrics {
-                match m {
-                    NamedMetrics::MetricValue {name, value} => {
-                        //println!("Value: {}", name)
-                        if value > &0 && &metric.metrics_type == metrictype {
-                            println!("{} {} {}", metric.metrics_type, name, value);
-                        }
-                    },
-                    NamedMetrics::MetricLatency {name, total_count, min, mean, percentile_75, percentile_95, percentile_99, percentile_99_9, percentile_99_99, max, total_sum} => {
-                        //println!("Latency: {}", name)
-                        if total_count > &0 && &metric.metrics_type == metrictype {
-                            println!("{} {} {}", metric.metrics_type, name, total_count);
-                        }
-                    },
+
+    /*
+        let master_metrics_data = reqwest::blocking::get(format!("http://{}/metrics", master_to_use.as_ref().unwrap()))
+            .unwrap_or_else(|e| {
+                eprintln!("Error reading from URL: {}", e);
+                process::exit(1);
+            })
+            .text().unwrap();
+        //println!("{:?}", master_metrics_data);
+        let master_metrics_parse: Vec<Metrics> = serde_json::from_str(&master_metrics_data)
+            .unwrap_or_else(|e| {
+                eprintln!("Error parsing response: {}", e);
+                process::exit(1);
+            });
+        let metricstypes = vec!["cluster", "server", "table", "tablet"];
+        for metrictype in metricstypes.iter() {
+            for metric in &master_metrics_parse {
+            //if metric.metrics_type == "server" {
+                for m in &metric.metrics {
+                    match m {
+                        NamedMetrics::MetricValue {name, value} => {
+                            //println!("Value: {}", name)
+                            if value > &0 && &metric.metrics_type == metrictype {
+                                println!("{} {} {}", metric.metrics_type, name, value);
+                            }
+                        },
+                        NamedMetrics::MetricLatency {name, total_count, min, mean, percentile_75, percentile_95, percentile_99, percentile_99_9, percentile_99_99, max, total_sum} => {
+                            //println!("Latency: {}", name)
+                            if total_count > &0 && &metric.metrics_type == metrictype {
+                                println!("{} {} {}", metric.metrics_type, name, total_count);
+                            }
+                        },
+                    }
                 }
+                //println!("{:?}", metric.metrics);
             }
-            //println!("{:?}", metric.metrics);
+            //println!("{:?}", metric.metrics_type);
         }
-        //println!("{:?}", metric.metrics_type);
-    }
-    //println!("{:?}", master_metrics_parse);
-    */
+        //println!("{:?}", master_metrics_parse);
+        */
 }
