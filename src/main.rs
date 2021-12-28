@@ -3,14 +3,15 @@ use std::process;
 use port_scanner::scan_port_addr;
 use std::collections::HashMap;
 
-use ybtool::{AllMasters, KeySpacesNoId, MasterHealthCheck, Metrics, TablesNoId, TabletsNoId, NamedMetrics};
+//use ybtool::{AllMasters, KeySpacesNoId, MasterHealthCheck, Metrics, TablesNoId, TabletsNoId, NamedMetrics};
+use ybtool::{AllMasters, KeySpacesNoId, MasterHealthCheck, TablesNoId, TabletsNoId};
 use ybtool::AllTabletServers;
 use ybtool::MasterDumpEntities;
 
 #[derive(Debug, StructOpt)]
 struct Opts {
-    //#[structopt(short, long, default_value = "localhost:7000")]
-    #[structopt(short, long, default_value = "192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000")]
+    #[structopt(short, long, default_value = "localhost:7000")]
+    //#[structopt(short, long, default_value = "192.168.66.80:7000,192.168.66.81:7000,192.168.66.82:7000")]
     masters: String,
 }
 
@@ -23,6 +24,8 @@ fn main() {
         if scan_port_addr(hostnames) {
             master_to_use = Some(hostnames.to_string());
             break;
+        } else {
+            println!("Warning: master not responding on: {}", hostnames.to_string());
         };
     }
     if master_to_use.is_none() {
@@ -47,9 +50,8 @@ fn main() {
         print!("{:32} ", master_status.instance_id.permanent_uuid);
         print!("{:20} ", format!("{}:{}", master_status.registration.private_rpc_addresses[0].host, master_status.registration.private_rpc_addresses[0].port));
         let role = &master_status.role.unwrap_or("UNKNOWN".to_string());
-        let mut state = match master_status.error {
-            //Some(T) => "UNKNOWN",
-            Some(T) => T.code,
+        let state = match master_status.error {
+            Some(master_status_error) => master_status_error.code,
             None => "ALIVE".to_string(),
         };
         print!("{:13} ", state);
