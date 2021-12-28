@@ -100,3 +100,16 @@ ycql  system               transactions                   RUNNING    LEADER,VOTE
 ```
 When a tablet server is dead, it will additionally show the UUID of the tablet server.  
 Additionally, for all the tablets that have a replica on the dead tablet server, these will show up as under replicated. 
+
+# How to install
+Currently, this is only available as source code, not as executable.  
+However, it's easy to compile the tool:
+
+1. Get rust: `https://www.rust-lang.org/tools/install`.
+2. Clone this repository.
+3. Build the executable: 
+```
+cd yb_overview
+cargo build
+```
+The executable should be available in the target/debug directory.
